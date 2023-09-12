@@ -1,30 +1,42 @@
-FROM balenalib/rpi-raspbian
+# Используем базовый образ Home Assistant с bashio
+FROM ghcr.io/home-assistant/aarch64-base:3.18
 
+# Устанавливаем рабочую директорию
 WORKDIR /opt/z-way-server
 
+# Устанавливаем переменные окружения
 ENV DEBIAN_FRONTEND=noninteractive 
+ENV LANG C.UTF-8
 
+# Устанавливаем необходимые пакеты
 RUN apt-get update && \
     apt-get install -qqy --no-install-recommends \
     ca-certificates curl \
     wget procps gpg iproute2 openssh-client openssh-server sudo logrotate jq
 
+# Устанавливаем Z-Way
 RUN wget -q -O - https://storage.z-wave.me/RaspbianInstall |bash
 RUN rm -f /opt/z-way-server/automation/storage/*
 RUN sed -i 's|"config": "config"|"config": "configs/config"|g' /opt/z-way-server/automation/defaultConfigs/config.json
 
+# Создаем пользователя
 RUN useradd -rm -d /home/support -s /bin/bash -g root -G sudo -u 1000 support 
 RUN  echo 'support:razberry' | chpasswd
 
+# Устанавливаем тип устройства
 RUN echo "ha" > /etc/z-way/box_type
 
+# Загружаем и устанавливаем дополнительные файлы
 RUN wget -O /opt/z-way-server/automation/classes/AutomationController.js https://raw.githubusercontent.com/Z-Wave-Me/home-automation/1c5ad7bb95453b5bb7749ad2d1e5907d6949ccc3/classes/AutomationController.js
 
+# Копируем локальные файлы в образ
 COPY run.sh .
 RUN chmod a+x run.sh
 
+# Открываем порты
 EXPOSE 8083
 EXPOSE 8084
 EXPOSE 8883
 
+# Запускаем скрипт при старте контейнера
 CMD /opt/z-way-server/run.sh
