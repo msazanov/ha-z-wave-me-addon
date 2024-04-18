@@ -9,7 +9,7 @@ bashio::log.info "Checking and updating default config path..."
 
 # Change device path in /defailtConfig/config.json
 if [ -f "$defCJ" ]; then
-    sed -Ei "s|/dev/tty[A-Z]*[0-9]|$(bashio::config 'device')|g" $defCJ
+    jq --arg device "$(bashio::config 'device')" '.instances[0].params.port = $device' $defCJ > $defCJ.tmp && mv $defCJ.tmp $defCJ
     bashio::log.info "Device path in default config updated."
 else
     bashio::log.warning "Default config not found."
@@ -42,9 +42,9 @@ bashio::log.info "Processing user configjson file..."
 if [ -f /opt/z-way-server/automation/storage/configjson-* ]; then
     userCJ=$(ls /opt/z-way-server/automation/storage/configjson-*)
 
-    # If force device selection checked, replace the path in it
+    # If force device selection checked, replace the path in it using jq
     if [ bashio::config 'configjson_device_replace' ]; then
-        sed -Ei "s|/dev/tty[A-Z]*[0-9]|$(bashio::config 'device')|g" $userCJ
+        jq --arg device "$(bashio::config 'device')" '.instances[0].params.port = $device' $userCJ > $userCJ.tmp && mv $userCJ.tmp $userCJ
         bashio::log.info "Device path in user config updated."
     fi
 else
