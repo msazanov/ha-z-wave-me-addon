@@ -56,7 +56,7 @@ bashio::log.info "Processing default config directory..."
 # Change default config directory to configs/config for compatility with Docker, HA and Hub
 if [ -e /opt/z-way-server/config -a ! -e /data/opt/z-way-server/configs/config ]; then
   # Change config path in defaultConfigs/config.json from config to configs/config
-  sed -i 's|"config": "config"|"config": "configs/config"|g' $defCJ
+  jq '.instances[0].params.config = "configs/config"' $defCJ > $defCJ.tmp && mv $defCJ.tmp $defCJ
   # Make configs folder in external /data folder
   mkdir -p /data/opt/z-way-server/configs/
   # Move config folder from default docker image to external folder
