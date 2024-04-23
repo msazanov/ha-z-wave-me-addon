@@ -7,7 +7,7 @@ defCJ=/opt/z-way-server/automation/defaultConfigs/config.json
 
 bashio::log.info "Checking and updating default config path..."
 
-# Change device path in /defailtConfig/config.json
+# Change device path in /defailtConfig/config.json using jq
 if [ -f "$defCJ" ]; then
     jq --arg device "$(bashio::config 'device')" '.instances[0].params.port = $device' $defCJ > $defCJ.tmp && mv $defCJ.tmp $defCJ
     bashio::log.info "Device path in default config updated."
@@ -38,14 +38,18 @@ done
 
 bashio::log.info "Processing user configjson file..."
 
-# User configjson file path
-if [ -f /opt/z-way-server/automation/storage/configjson-* ]; then
-    userCJ=$(ls /opt/z-way-server/automation/storage/configjson-*)
+# User configjson file path (using the known location)
+userCJ="/opt/z-way-server/automation/storage/configjson-*.json"
 
+if [ -f "$userCJ" ]; then
     # If force device selection checked, replace the path in it using jq
     if [ bashio::config 'configjson_device_replace' ]; then
         jq --arg device "$(bashio::config 'device')" '.instances[0].params.port = $device' $userCJ > $userCJ.tmp && mv $userCJ.tmp $userCJ
         bashio::log.info "Device path in user config updated."
+
+        # Read and log the updated port value
+        updatedPort=$(jq -r '.instances[0].params.port' $userCJ)
+        bashio::log.info "Updated port in configjson: $updatedPort" 
     fi
 else
     bashio::log.warning "User configjson file not found."
@@ -53,7 +57,7 @@ fi
 
 bashio::log.info "Processing default config directory..."
 
-# Change default config directory to configs/config for compatility with Docker, HA and Hub
+# Change default config directory to configs/config for compatibility with Docker, HA and Hub
 if [ -e /opt/z-way-server/config -a ! -e /data/opt/z-way-server/configs/config ]; then
   # Change config path in defaultConfigs/config.json from config to configs/config
   jq '.instances[0].params.config = "configs/config"' $defCJ > $defCJ.tmp && mv $defCJ.tmp $defCJ
@@ -63,26 +67,24 @@ if [ -e /opt/z-way-server/config -a ! -e /data/opt/z-way-server/configs/config ]
   mv /opt/z-way-server/config/ /data/opt/z-way-server/configs/
   bashio::log.info "Moved default config directory."
 else
-  # Jut remove config folder from docker image dirrectory
+  # Just remove config folder from docker image directory
   rm -rf /opt/z-way-server/config/
   bashio::log.info "Removed existing default config directory."
 fi
 
-# Make simlinks
+# Make symlinks
 ln -sf /data/opt/z-way-server/configs/ /opt/z-way-server/
 bashio::log.info "Created symlink for default config directory."
 
 bashio::log.info "Setting local IP..."
 echo "$(hostname -I | awk '{print $1}')" > /opt/z-way-server/automation/localIP.json
 
-
 # Check if the logging level is a number between 0 and 6
 if [[ "$(bashio::config 'log_level')" =~ ^[0-6]$ ]]; then
     bashio::log.info "Setting log level to $(bashio::config 'log_level')"
 
-    # Use sed to modify the logging level in the config.xml file
-    sed -i "s|<log-level>.*</log-level>|<log-level>$(bashio::config 'log_level')</log-level>|" /opt/z-way-server/config.xml
-
+    # Update log-level in config.xml using xmlstarlet (assuming it's available)
+    xmlstarlet ed -L -u "/config/log-level" -v "$(bashio::config 'log_level')" /opt/z-way-server/config.xml
 else
     bashio::log.error "Invalid log level: $(bashio::config 'log_level'). It should be a number between 0 and 6."
 fi
