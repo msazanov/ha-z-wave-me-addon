@@ -38,5 +38,3 @@ schema:
   remote_support_access: bool?  # Schema for remote support access
   zbw_password: str  # Schema for password
   log_level: int(0,6)
-
-
