@@ -13,6 +13,7 @@ RUN apt-get update && \
     wget procps gpg iproute2 openssh-client openssh-server sudo logrotate jq
 
 RUN wget -q -O - https://storage.z-wave.me/Z-Way-Install |bash
+
 RUN wget https://storage.z-wave.me/tmp/libgattlib.so -O /opt/z-way-server/libs/libgattlib.so
 RUN rm -f /opt/z-way-server/automation/storage/*
 
