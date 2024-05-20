@@ -1,4 +1,4 @@
 # https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
-name: Z-Wave.Me Z-Way add-on for Home Assistant
-url: 'https://github.com/Z-Wave-Me/ha-z-wave-me-addon'
+name: Z-Wave.Me Z-Way add-on for Home Assistant DEV
+url: 'https://github.com/msazanov/ha-z-wave-me-addon'
 maintainer: Z-Wave.Me <support@z-wave.me>
