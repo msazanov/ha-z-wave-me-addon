@@ -1,4 +1,4 @@
-FROM ghcr.io/home-assistant/armhf-base-debian:bullseye
+FROM ghcr.io/home-assistant/armhf-base-debian:bookworm
 
 WORKDIR /opt/z-way-server
 
