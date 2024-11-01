@@ -13,7 +13,7 @@ RUN apt-get update && \
     wget procps gpg iproute2 openssh-client openssh-server sudo logrotate jq
 
 RUN sudo dpkg --add-architecture armhf
-RUN echo "deb http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list && ## temp hot fix for libssl1.1:armhf
+RUN echo "deb http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list
 RUN wget -q -O - https://storage.z-wave.me/Z-Way-Install |bash
 RUN rm -f /opt/z-way-server/automation/storage/*
 
