@@ -21,3 +21,6 @@ configuration:
   log_level:
     name: Log level
     description: Set the logging level (0 for all logs, 6 to disable all logs)
+  tcp_serial_device:
+    name: TCP Serial Device
+    description: Specify the TCP address for a remote Z-Wave serial device over TCP. The format should be "IP:port", e.g., "192.168.0.100:8088"

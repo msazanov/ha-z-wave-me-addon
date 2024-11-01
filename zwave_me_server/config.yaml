@@ -24,6 +24,7 @@ webui: http://[HOST]:[PORT:8083]  # Add-on interface URL
 options:
   device: /dev/ttyAMA0  # Main device for connection
   additional_devices: ""  # Additional devices for connection
+  tcp_serial_device: "" # Serial device over TCP connection https://forum.z-wave.me/viewtopic.php?f=3417&t=32593
   configjson_device_replace: false  # Device configuration replacement
   remote_access: true  # Remote access to the add-on
   remote_support_access: false  # Remote support access
@@ -32,6 +33,7 @@ options:
 schema:
   device: device(subsystem=tty)  # Schema for the main device
   additional_devices: str  # Schema for additional devices
+  tcp_serial_device: str # Schema for URL of TCP-Serial Z-Wave Interface
   configjson_device_replace: bool?  # Schema for device configuration replacement
   remote_access: bool?  # Schema for remote access
   remote_support_access: bool?  # Schema for remote support access

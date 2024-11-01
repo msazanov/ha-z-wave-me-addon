@@ -98,4 +98,14 @@ else
     bashio::log.error "Invalid log level: $(bashio::config 'log_level'). It should be a number between 0 and 6."
 fi
 
+# Check and run socat, if tcp_serial_device not empty
+tcp_serial_device=$(bashio::config 'tcp_serial_device')
+if [ -n "$tcp_serial_device" ]; then
+    bashio::log.info "Starting socat for TCP serial device: $tcp_serial_device"
+    socat -d -d -d UNIX-LISTEN:/tmp/zway,reuseaddr,fork TCP:"$tcp_serial_device" &
+else
+    bashio::log.info "No TCP serial device specified, skipping socat."
+fi
+
+
 bashio::log.info "Initialization script completed."
