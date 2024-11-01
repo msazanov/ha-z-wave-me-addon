@@ -1,7 +1,7 @@
-name: Z-Wave.Me Add-on
+name: Z-Wave.Me Add-on DEV
 version: v4.1.4
 slug: zwave_me_server
-description: 'Z-Wave.Me Z-Way add-on for Home Assistant'
+description: 'Z-Wave.Me Z-Way add-on for Home Assistant DEV'
 startup: services  # Determines when the add-on should start
 arch:
   - amd64
@@ -13,8 +13,8 @@ host_dbus: true
 uart: true
 hassio_api: true
 
-url: https://github.com/z-wave-me/ha-z-wave-me-addon/  # Add-on repository URL
-image: "ghcr.io/z-wave-me/{arch}-ha-z-wave-me-addon"  # Docker image for the add-on
+url: https://github.com/msazanov/ha-z-wave-me-addon/  # Add-on repository URL
+image: "ghcr.io/msazanov/{arch}-ha-z-wave-me-addon"  # Docker image for the add-on
 ports:
   8083/tcp: 8083  # Main ports to forward
 ports_description:
